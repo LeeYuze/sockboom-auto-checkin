@@ -35,8 +35,8 @@ jobs:
         tail run.log #避免日志上传失败丢失日志
     - name: Commit #上传日志到仓库，可以自行修改 name 和 email
       env:
-       NAME: merrycodes
-       EMAIL: merrycodes@163.com
+       NAME: LeeYuze
+       EMAIL: qw110288qw@vip.qq.com
       run: |
         git config --global user.name "$NAME"
         git config --global user.email "$EMAIL"
