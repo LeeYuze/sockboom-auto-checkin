@@ -7,7 +7,7 @@ on:
     tags:
     - 'v*'
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '0 16 * * *'
   watch:
     types: [started]
    
@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOMAIN: https://sockboom.tv
-    if: github.event.repository.owner.id == github.event.sender.id  # 自己点的 start
+    if: github.event.repository.owner.id == github.event.sender.id || github.event_name == 'schedule'
     steps:
     - name: Setup timezone
       uses: zcong1993/setup-timezone@master
@@ -28,12 +28,14 @@ jobs:
       env:
         EMAIL: ${{ secrets.EMAIL }}
         PASSWORD: ${{ secrets.PASSWORD }}
+        WXPUSHERTOKEN: ${{ secrets.WXPUSHERTOKEN }}
       run: | 
         curl -s -c cookie.txt -X POST "$DOMAIN/auth/login" -d email="$EMAIL" -d passwd="$PASSWORD"
     - name: Chick in Api #签到
       run: | 
-       dateTime=`date +%Y-%m-%d\ %H:%M:%S`
+        dateTime=`date +%Y-%m-%d\ %H:%M:%S`
         response=$(curl -b cookie.txt -X POST "$DOMAIN/user/checkin")
+        curl 'http://wxpusher.zjiecode.com/api/send/message' -H 'Content-Type: application/json' -d '{"content": "'$response'","appToken": "$WXPUSHERTOKEN","contentType":1}'
         echo "$dateTime - $(echo -e $response)" >> run.log
         tail run.log #避免日志上传失败丢失日志
     - name: Commit #上传日志到仓库，可以自行修改 name 和 email
