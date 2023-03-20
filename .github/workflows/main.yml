@@ -30,12 +30,13 @@ jobs:
         PASSWORD: ${{ secrets.PASSWORD }}
         WXPUSHERTOKEN: ${{ secrets.WXPUSHERTOKEN }}
       run: | 
-        curl -s -c cookie.txt -X POST "$DOMAIN/auth/login" -d email="$EMAIL" -d passwd="$PASSWORD"
+        curl -s -c cookie.txt -X POST "$DOMAIN/auth/login1" -d email="$EMAIL" -d passwd="$PASSWORD"
     - name: Chick in Api #签到
       run: | 
         dateTime=`date +%Y-%m-%d\ %H:%M:%S`
         response=$(curl -b cookie.txt -X POST "$DOMAIN/user/checkin123")
         response2=$(curl 'http://wxpusher.zjiecode.com/api/send/message' -H 'Content-Type: application/json' -d '{"content": "123123","appToken": "'$WXPUSHERTOKEN'","uids":["UID_ZiVLTNi2xpezjcls0GKyEa5NJnUS"],"contentType":1}')
+        echo response2
         echo "$dateTime - $(echo -e $response)" >> run.log
         tail run.log #避免日志上传失败丢失日志
     - name: Commit #上传日志到仓库，可以自行修改 name 和 email
