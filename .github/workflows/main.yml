@@ -28,10 +28,11 @@ jobs:
       env:
         EMAIL: ${{ secrets.EMAIL }}
         PASSWORD: ${{ secrets.PASSWORD }}
-        WXPUSHERTOKEN: ${{ secrets.WXPUSHERTOKEN }}
       run: | 
         curl -s -c cookie.txt -X POST "$DOMAIN/auth/login1" -d email="$EMAIL" -d passwd="$PASSWORD"
     - name: Chick in Api #签到
+      env:
+        WXPUSHERTOKEN: ${{ secrets.WXPUSHERTOKEN }}
       run: | 
         dateTime=`date +%Y-%m-%d\ %H:%M:%S`
         response=$(curl -b cookie.txt -X POST "$DOMAIN/user/checkin123")
